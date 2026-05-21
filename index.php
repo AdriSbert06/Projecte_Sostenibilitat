@@ -1,33 +1,44 @@
 <?php
-// 1. Connectar-se a la base de dades SQLite
-$db = new SQLite3('database/biblioteca.db');
+// 1. Connectar-se a la base de dades i incloure les funcions
+require_once 'includes/db_connect.php';
+require_once 'api/apiController.php'; //TEMPORAL CAMBIAR A includes/functions.php
 
-// 2. Consulta per obtenir els objectes
-$query = "SELECT o.obj_id, o.obj_nom, o.obj_imatge, o.obj_descripcio, o.obj_estat, 
-                 c.cat_nom, u.usu_barri 
-          FROM objectes o
-          JOIN categories c ON o.cat_id = c.cat_id
-          JOIN usuaris u ON o.usu_propietari_id = u.usu_id";
+// Recollem la categoria de la URL si existeix (per al filtre)
+$categoria_filtrada = isset($_GET['category']) ? $_GET['category'] : null;
 
-$resultats = $db->query($query);
+// Cridem la funció modular pasant la connexió i el filtre (si en té)
+$query_exec = obtenirObjectes($db, $categoria_filtrada);
 
-// 3. Incloure la capçalera i el menú
+// 2. Incloure la capçalera i el menú compartit
 include 'includes/menu.php';
 ?>
 
 <div class="container">
-    
-    <div class="hero-section text-center">
-        <h1 class="display-5 fw-bold text-success">Comparteix en comptes de comprar</h1>
-        <p class="lead text-muted">A la Biblioteca de les Coses de Barcelona fomentem l'<strong>ODS 12: Consum i Producció Responsables</strong>. Allarga la vida útil dels objectes de la teva comunitat.</p>
-        <span class="badge bg-success p-2 fs-6">♻ Economia Circular</span>
+
+    <div class="row my-4 bg-white p-3 rounded shadow-sm mx-1">
+        <div class="col-md-6 d-flex align-items-center">
+            <h5 class="mb-0 me-3 text-secondary">Filtrar per categoria:</h5>
+            <select class="form-select w-auto" onchange="location = this.value;">
+                <option value="index.php">Totes les categories</option>
+                <?php
+                // Reemplacem la consulta directa per la nova funció
+                $cats = obtenirCategories($db);
+                while($c = $cats->fetchArray(SQLITE3_ASSOC)) {
+                    $selected = ($categoria_filtrada == $c['cat_nom']) ? 'selected' : '';
+                    echo "<option value='index.php?category=".urlencode($c['cat_nom'])."' $selected>".$c['cat_nom']."</option>";                }
+                ?>
+            </select>
+        </div>
     </div>
 
     <h2 class="mb-4 text-secondary">Catàleg d'Objectes Disponibles</h2>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         
-        <?php while ($row = $resultats->fetchArray(SQLITE3_ASSOC)): ?>
+        <?php 
+        // Bucle net per imprimir TOTS els objectes obtinguts de la funció
+        while ($row = $query_exec->fetchArray(SQLITE3_ASSOC)): 
+        ?>
             <div class="col">
                 <div class="card h-100 card-obj">
                     
@@ -60,7 +71,7 @@ include 'includes/menu.php';
                                 <span class="text-danger fw-bold">● En manteniment</span>
                             <?php endif; ?>
                             
-                            <a href="#" class="btn btn-sm btn-outline-success">Més detalls</a>
+                            <a href="detalls.php?id=<?php echo $row['obj_id']; ?>" class="btn btn-sm btn-outline-success">Més detalls</a>
                         </div>
                     </div>
                 </div>
@@ -71,9 +82,9 @@ include 'includes/menu.php';
 </div>
 
 <?php
-// 4. Tancar la connexió a la BD
-$db->close();
+// 4. Tancar la connexió a la BD de forma neta
+require_once 'includes/db_close.php';
 
-// 5. Incloure el peu de pàgina
+// 5. Incloure el peu de pàgina compartit
 include 'includes/foot.php';
 ?>

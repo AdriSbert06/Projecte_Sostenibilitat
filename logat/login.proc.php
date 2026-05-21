@@ -1,6 +1,8 @@
 <?php
-
-$db = new SQLite3('api/fakestoreapi.db'); 
+// CORRECCIÓN: Conectamos a tu base de datos oficial 'tools.db'
+// Si está en la raíz del proyecto, usa: '../tools.db'
+// Si está dentro de una carpeta database, usa: '../database/tools.db'
+$db = new SQLite3('../database/tools.db'); 
 
 header("Content-Type: application/json");
 
@@ -9,12 +11,14 @@ $nom = $input["nom"] ?? "";
 $contrassenya_plana = $input["contrassenya"] ?? "";
 
 if ($nom && $contrassenya_plana) {
-    $stmt = $db->prepare("SELECT * FROM usuaris WHERE nom = :nom");
+    // Buscamos al usuario por su nombre usando las columnas oficiales
+    $stmt = $db->prepare("SELECT * FROM usuaris WHERE usu_nom = :nom");
     $stmt->bindValue(":nom", $nom, SQLITE3_TEXT);
     $result = $stmt->execute();
     $usuari = $result->fetchArray(SQLITE3_ASSOC);
 
-    if ($usuari && $usuari["contrassenya"] === md5($contrassenya_plana)) {
+    // Verificamos contraseña encriptada en MD5 y campos correspondientes
+    if ($usuari && $usuari["usu_contra"] === md5($contrassenya_plana)) {
         
         $header = base64_encode(json_encode([
             "alg" => "HS256", 
@@ -22,9 +26,10 @@ if ($nom && $contrassenya_plana) {
         ]));
         
         $payload = base64_encode(json_encode([
-            "id" => $usuari["id"],
-            "nom" => $usuari["nom"],
-            "exp" => time() + 3600
+            "id" => $usuari["usu_id"],
+            "nom" => $usuari["usu_nom"],
+            "rol" => $usuari["usu_rol"],
+            "exp" => time() + 3600 // El token caduca en 1 hora
         ]));
 
         $clau_secreta = "clauSuperSecreta123";
@@ -38,6 +43,7 @@ if ($nom && $contrassenya_plana) {
 
         $token = "$header.$payload.$signatura";
 
+        // Guardamos el JWT en la cookie para todo el sitio web
         setcookie("token", $token, time() + 3600, "/");
         
         echo json_encode(["status" => "success", "token" => $token]);
@@ -49,4 +55,6 @@ if ($nom && $contrassenya_plana) {
     http_response_code(400);
     echo json_encode(["error" => "Falten dades (nom o contrasenya)"]);
 }
+
+$db->close();
 ?>

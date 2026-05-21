@@ -1,23 +1,23 @@
 <?php 
-include("includes/head.html"); 
-include("includes/menu.php");
+include("../includes/menu.php");
 ?>
 
 <div class="container" style="max-width: 400px; margin-top: 50px;">
-    <h3>INICIAR SESSIÓ</h3>
-    <form id="formLogin">
-        <div class="form-group">
-            <label>Usuari:</label>
-            <input type="text" id="nom" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label>Contrasenya:</label>
-            <input type="password" id="contrassenya" class="form-control" required>
-        </div>
-        <br>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
-    </form>
-    <div id="missatge" style="margin-top: 20px; text-align: center;"></div>
+    <div class="card p-4 shadow-sm bg-white">
+        <h3 class="text-center text-success mb-4">INICIAR SESSIÓ</h3>
+        <form id="formLogin">
+            <div class="form-group mb-3">
+                <label class="form-label">Usuari:</label>
+                <input type="text" id="nom" class="form-control" required>
+            </div>
+            <div class="form-group mb-4">
+                <label class="form-label">Contrasenya:</label>
+                <input type="password" id="contrassenya" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-success" style="width: 100%;">Entrar</button>
+        </form>
+        <div id="missatge" style="margin-top: 20px; text-align: center;"></div>
+    </div>
 </div>
 
 <script>
@@ -39,12 +39,13 @@ document.getElementById("formLogin").addEventListener("submit", function(e) {
         return res.json();
     })
     .then(data => {
-        window.location.href = "gestionarProductes.php";
+        // CORRECCIÓ: Sortim de la carpeta logat/ cap a l'arrel on està la gestió
+        window.location.href = "../gestionarProductes.php";
     })
     .catch(error => {
-        document.getElementById("missatge").innerHTML = `<p style="color:red">${error.error || "Error en el login"}</p>`;
+        document.getElementById("missatge").innerHTML = `<p style="color:red; font-weight:bold">${error.error || "Error en el login"}</p>`;
     });
 });
 </script>
 
-<?php include("includes/foot.html"); ?>
+<?php include("../includes/foot.php"); ?>

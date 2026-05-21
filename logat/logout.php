@@ -1,5 +1,5 @@
 <?php
 setcookie("token", "", time() - 3600, "/");
-header("Location: login.php");
+header("Location: index.php");
 exit();
 ?>

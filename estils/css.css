@@ -1,0 +1,36 @@
+:root {
+    --verde-sostenible: rgb(255, 123, 0);
+    --verde-claro: #e8f5e9;
+}
+
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    background-color: var(--verde-sostenible) !important;
+}
+
+.hero-section {
+    background-color: var(--verde-claro);
+    padding: 40px 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.card-obj {
+    transition: transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-obj:hover {
+    transform: translateY(-5px);
+}
+
+.badge-categoria {
+    background-color: #6c757d;
+}
+
+.badge-gratis {
+    background-color: var(--verde-sostenible);
+}
