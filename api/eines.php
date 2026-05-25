@@ -1,6 +1,5 @@
 <?php
-// Conexió oficial a la nostra base de dades d'Economia Circular
-$db = new SQLite3('database/biblioteca.db');
+$db = new SQLite3('database/tools.db');
 header('Content-Type: application/json');
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -9,14 +8,12 @@ $input = json_decode(file_get_contents('php://input'), true);
 switch($method) {
     case 'GET':
         if (isset($_GET['categories']) && $_GET['categories'] === 'all') {
-            // Retorna totes les categories
             $results = $db->query("SELECT * FROM categories");
             $categories = [];
             while ($row = $results->fetchArray(SQLITE3_ASSOC)) { $categories[] = $row; }
             echo json_encode($categories);
 
         } elseif (isset($_GET['id'])) {
-            // Retorna un objecte per ID detallat
             $stmt = $db->prepare("SELECT o.*, c.cat_nom, u.usu_barri, u.usu_mail, u.usu_nom 
                                   FROM objectes o
                                   JOIN categories c ON o.cat_id = c.cat_id
@@ -32,7 +29,6 @@ switch($method) {
             }
 
         } else {
-            // Filtre per categoria o llistar-ho tot (Ordenat per ID descendent per veure els nous primer)
             if (isset($_GET['category'])) {
                 $stmt = $db->prepare("SELECT o.*, c.cat_nom, u.usu_barri 
                                       FROM objectes o 

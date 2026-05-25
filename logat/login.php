@@ -39,8 +39,7 @@ document.getElementById("formLogin").addEventListener("submit", function(e) {
         return res.json();
     })
     .then(data => {
-        // CORRECCIÓ: Sortim de la carpeta logat/ cap a l'arrel on està la gestió
-        window.location.href = "../gestionarProductes.php";
+        window.location.href = "../productes/gestionarProductes.php";
     })
     .catch(error => {
         document.getElementById("missatge").innerHTML = `<p style="color:red; font-weight:bold">${error.error || "Error en el login"}</p>`;

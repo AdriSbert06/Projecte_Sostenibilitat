@@ -5,7 +5,7 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
     exit;
 }
 
-$id_objecte = intval($_GET['id']); // Convertim a enter per seguretat
+$id_objecte = intval($_GET['id']);
 
 // 2. Connectar-se a la base de dades
 include_once 'includes/db_connect.php';
@@ -17,7 +17,7 @@ $query = "SELECT o.*, c.cat_nom, u.usu_nom, u.usu_mail, u.usu_barri
           JOIN usuaris u ON o.usu_propietari_id = u.usu_id
           WHERE o.obj_id = $id_objecte";
 
-$resultat = $db->querySingle($query, true); // Retorna una única fila com a array associatiu
+$resultat = $db->querySingle($query, true);
 
 // Si l'objecte no existeix a la base de dades, tornem a l'index
 if (!$resultat) {
@@ -26,7 +26,6 @@ if (!$resultat) {
     exit;
 }
 
-// 4. Incloure el menú (Aquest fitxer controla internament $usuariLoguejat)
 include 'includes/menu.php';
 ?>
 

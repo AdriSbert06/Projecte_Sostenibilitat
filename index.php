@@ -1,15 +1,11 @@
 <?php
-// 1. Connectar-se a la base de dades i incloure les funcions
 require_once 'includes/db_connect.php';
-require_once 'api/apiController.php'; //TEMPORAL CAMBIAR A includes/functions.php
+require_once 'api/apiController.php';
 
-// Recollem la categoria de la URL si existeix (per al filtre)
 $categoria_filtrada = isset($_GET['category']) ? $_GET['category'] : null;
 
-// Cridem la funció modular pasant la connexió i el filtre (si en té)
 $query_exec = obtenirObjectes($db, $categoria_filtrada);
 
-// 2. Incloure la capçalera i el menú compartit
 include 'includes/menu.php';
 ?>
 
@@ -21,7 +17,6 @@ include 'includes/menu.php';
             <select class="form-select w-auto" onchange="location = this.value;">
                 <option value="index.php">Totes les categories</option>
                 <?php
-                // Reemplacem la consulta directa per la nova funció
                 $cats = obtenirCategories($db);
                 while($c = $cats->fetchArray(SQLITE3_ASSOC)) {
                     $selected = ($categoria_filtrada == $c['cat_nom']) ? 'selected' : '';
@@ -36,7 +31,6 @@ include 'includes/menu.php';
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         
         <?php 
-        // Bucle net per imprimir TOTS els objectes obtinguts de la funció
         while ($row = $query_exec->fetchArray(SQLITE3_ASSOC)): 
         ?>
             <div class="col">
@@ -82,9 +76,7 @@ include 'includes/menu.php';
 </div>
 
 <?php
-// 4. Tancar la connexió a la BD de forma neta
 require_once 'includes/db_close.php';
 
-// 5. Incloure el peu de pàgina compartit
 include 'includes/foot.php';
 ?>

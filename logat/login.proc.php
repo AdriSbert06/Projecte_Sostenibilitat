@@ -1,7 +1,4 @@
 <?php
-// CORRECCIÓN: Conectamos a tu base de datos oficial 'tools.db'
-// Si está en la raíz del proyecto, usa: '../tools.db'
-// Si está dentro de una carpeta database, usa: '../database/tools.db'
 $db = new SQLite3('../database/tools.db'); 
 
 header("Content-Type: application/json");
@@ -11,13 +8,11 @@ $nom = $input["nom"] ?? "";
 $contrassenya_plana = $input["contrassenya"] ?? "";
 
 if ($nom && $contrassenya_plana) {
-    // Buscamos al usuario por su nombre usando las columnas oficiales
     $stmt = $db->prepare("SELECT * FROM usuaris WHERE usu_nom = :nom");
     $stmt->bindValue(":nom", $nom, SQLITE3_TEXT);
     $result = $stmt->execute();
     $usuari = $result->fetchArray(SQLITE3_ASSOC);
 
-    // Verificamos contraseña encriptada en MD5 y campos correspondientes
     if ($usuari && $usuari["usu_contra"] === md5($contrassenya_plana)) {
         
         $header = base64_encode(json_encode([
@@ -29,7 +24,7 @@ if ($nom && $contrassenya_plana) {
             "id" => $usuari["usu_id"],
             "nom" => $usuari["usu_nom"],
             "rol" => $usuari["usu_rol"],
-            "exp" => time() + 3600 // El token caduca en 1 hora
+            "exp" => time() + 3600
         ]));
 
         $clau_secreta = "clauSuperSecreta123";
@@ -43,7 +38,6 @@ if ($nom && $contrassenya_plana) {
 
         $token = "$header.$payload.$signatura";
 
-        // Guardamos el JWT en la cookie para todo el sitio web
         setcookie("token", $token, time() + 3600, "/");
         
         echo json_encode(["status" => "success", "token" => $token]);
