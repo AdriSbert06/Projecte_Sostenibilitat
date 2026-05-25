@@ -1,4 +1,4 @@
-# Biblioteca de les Coses - Tool Sharing
+# 🛠️ Tool Sharing
 
 Plataforma web d'economia circular (ODS 12) per compartir i prestar eines entre veïns de forma gratuïta.
 
