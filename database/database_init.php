@@ -94,6 +94,4 @@
     (3, 2, '2026-05-20', '2026-05-27', 'actiu');");
 
     $db->close();
-    
-    echo "Base de dades inicialitzada amb 12 categories, 3 usuaris i 15 objectes!";
 ?>

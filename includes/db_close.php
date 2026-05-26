@@ -1,3 +1,3 @@
 <?php
-// 4. Tancar la connexió
+// Tancar la connexió
 $db->close();

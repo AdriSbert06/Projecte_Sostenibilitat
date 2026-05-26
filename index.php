@@ -20,7 +20,8 @@ include 'includes/menu.php';
                 $cats = obtenirCategories($db);
                 while($c = $cats->fetchArray(SQLITE3_ASSOC)) {
                     $selected = ($categoria_filtrada == $c['cat_nom']) ? 'selected' : '';
-                    echo "<option value='index.php?category=".urlencode($c['cat_nom'])."' $selected>".$c['cat_nom']."</option>";                }
+                    echo "<option value='index.php?category=".urlencode($c['cat_nom'])."' $selected>".$c['cat_nom']."</option>";                
+                }
                 ?>
             </select>
         </div>
