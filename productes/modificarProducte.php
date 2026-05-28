@@ -1,38 +1,37 @@
 <?php
-include '../includes/menu.php';
+    include '../includes/menu.php';
 
-if (!$usuariLoguejat) {
-    header("Location: ../logat/login.php"); 
-    exit;
-}
+    if (!$usuariLoguejat) {
+        header("Location: ../logat/login.php"); 
+        exit;
+    }
 
-include_once '../includes/db_connect.php';
+    include_once '../includes/db_connect.php';
 
-// Validem que ens arribi un ID d'objecte vàlid per editar
-$id_objecte = isset($_GET['id']) ? intval($_GET['id']) : 0;
-if ($id_objecte <= 0) {
-    header("Location: gestionarProductes.php");
-    exit;
-}
+    $objecteId = isset($_GET['id']) ? intval($_GET['id']) : 0;
+    if ($objecteId <= 0) {
+        header("Location: gestionarProductes.php");
+        exit;
+    }
 
-// Recuperem les dades actuals de l'objecte (assegurem que sigui del propietari logat)
-$stmt = $db->prepare("SELECT * FROM objectes WHERE obj_id = :id AND usu_propietari_id = :usu_id");
-$stmt->bindValue(':id', $id_objecte, SQLITE3_INTEGER);
-$stmt->bindValue(':usu_id', $usuariLoguejat['id'], SQLITE3_INTEGER);
-$obj = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
+    // Recuperem les dades actuals de l'objecte (assegurem que sigui del propietari logat)
+    $stmt = $db->prepare("SELECT * FROM objectes WHERE obj_id = :id AND usu_propietari_id = :usu_id");
+    $stmt->bindValue(':id', $objecteId, SQLITE3_INTEGER);
+    $stmt->bindValue(':usu_id', $usuariLoguejat['id'], SQLITE3_INTEGER);
+    $obj = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
 
-if (!$obj) {
-    // Si l'objecte no existeix o no és seu, el fem fora
-    header("Location: gestionarProductes.php");
-    exit;
-}
+    if (!$obj) {
+        // Si l'objecte no existeix o no és seu, el fem fora
+        header("Location: gestionarProductes.php");
+        exit;
+    }
 
-$categories = $db->query("SELECT * FROM categories ORDER BY cat_nom ASC");
+    $categories = $db->query("SELECT * FROM categories ORDER BY cat_nom ASC");
 ?>
 
 <div class="container my-5" style="max-width: 650px;">
     <div class="card p-4 shadow-sm border-0 bg-white rounded">
-        <h2 class="fw-bold text-dark mb-4">📝 Modificar Objecte</h2>
+        <h2 class="fw-bold text-dark mb-4">Modificar Objecte</h2>
         
         <form id="formModificarObjecte">
             <input type="hidden" id="obj_id" value="<?php echo $obj['obj_id']; ?>">
@@ -78,7 +77,6 @@ document.getElementById("formModificarObjecte").addEventListener("submit", funct
     e.preventDefault();
     const feedback = document.getElementById("missatgeFeedback");
 
-    // Construïm l'estructura JSON exacta que la teva API (`PUT`) espera llegir
     const dades = {
         obj_id: parseInt(document.getElementById("obj_id").value),
         obj_nom: document.getElementById("nom").value.trim(),
@@ -87,7 +85,7 @@ document.getElementById("formModificarObjecte").addEventListener("submit", funct
         obj_imatge: document.getElementById("imatge").value.trim()
     };
 
-    // Enviem la petició de modificació amb PUT cap a api/eines.php
+    // Petició PUT
     fetch('../api/eines.php', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -99,7 +97,7 @@ document.getElementById("formModificarObjecte").addEventListener("submit", funct
     })
     .then(data => {
         if (data.status === "success") {
-            feedback.innerHTML = `<div class="alert alert-success m-0">🎉 Canvis desats correctament!</div>`;
+            feedback.innerHTML = `<div class="alert alert-success m-0"> Canvis guardats correctament!</div>`;
             setTimeout(() => window.location.href = "gestionarProductes.php?status=modificat", 1500);
         } else {
             feedback.innerHTML = `<div class="alert alert-danger m-0">⚠️ Error: ${data.message || 'No s\'han pogut desar els canvis.'}</div>`;

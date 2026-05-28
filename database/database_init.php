@@ -1,7 +1,7 @@
 <?php
     $db = new SQLite3('tools.db');
 
-    // 1. Crear taula de categories
+    // Es Crea la taula categories
     $db->exec("CREATE TABLE IF NOT EXISTS 'categories' (
         'cat_id'          INTEGER,
         'cat_nom'         TEXT NOT NULL UNIQUE,
@@ -25,7 +25,7 @@
     (12, 'Artesania i Costura', 'Màquines de cosir, eines de marroquineria, gúbies o cavallets de pintura');");
 
 
-    // 2. Crear taula d'usuaris
+    // Crear taula d'usuaris
     $db->exec("CREATE TABLE IF NOT EXISTS 'usuaris' (
         'usu_id'      INTEGER,
         'usu_nom'     TEXT NOT NULL,
@@ -43,7 +43,7 @@
     (3, 'admin', '" . md5('admin1234') . "', 'admin', 'admin@gmail.com', 'Eixample');");
 
 
-    // 3. Crear taula d'objectes
+    // Crear taula d'objectes
     $db->exec("CREATE TABLE IF NOT EXISTS 'objectes' (
         'obj_id'          INTEGER,
         'obj_nom'         TEXT NOT NULL,
@@ -76,7 +76,7 @@
     (15, 'Altaveu portàtil potent', 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?q=80', 'Altaveu amb connexió Bluetooth i micròfon inclòs per a esdeveniments de barri.', 'disponible', 5, 2);");
 
 
-    // 4. Crear taula de préstecs
+    // Crear taula de préstecs
     $db->exec("CREATE TABLE IF NOT EXISTS 'prestecs' (
         'pre_id'           INTEGER,
         'obj_id'           INTEGER NOT NULL,

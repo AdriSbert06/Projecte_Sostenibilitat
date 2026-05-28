@@ -1,39 +1,37 @@
 <?php
-// 1. Controlar que ens hagin passat un ID vàlid per l'URL
-if (!isset($_GET['id']) || empty($_GET['id'])) {
-    header('Location: index.php');
-    exit;
-}
+    if (!isset($_GET['id']) || empty($_GET['id'])) {
+        header('Location: index.php');
+        exit;
+    }
 
-$id_objecte = intval($_GET['id']);
+    $id_objecte = intval($_GET['id']);
 
-// 2. Connectar-se a la base de dades
-include_once 'includes/db_connect.php';
+    include_once 'includes/db_connect.php';
 
-// 3. Obtenir totes les dades del producte, incloent qui és el propietari i el seu mail
-$query = "SELECT o.*, c.cat_nom, u.usu_nom, u.usu_mail, u.usu_barri 
-          FROM objectes o
-          JOIN categories c ON o.cat_id = c.cat_id
-          JOIN usuaris u ON o.usu_propietari_id = u.usu_id
-          WHERE o.obj_id = $id_objecte";
+    // Obtenir totes les dades del producte
+    $query = "SELECT o.*, c.cat_nom, u.usu_nom, u.usu_mail, u.usu_barri 
+            FROM objectes o
+            JOIN categories c ON o.cat_id = c.cat_id
+            JOIN usuaris u ON o.usu_propietari_id = u.usu_id
+            WHERE o.obj_id = $id_objecte";
 
-$resultat = $db->querySingle($query, true);
+    $resultat = $db->querySingle($query, true);
 
-// Si l'objecte no existeix a la base de dades, tornem a l'index
-if (!$resultat) {
-    include_once 'includes/db_close.php';
-    header('Location: index.php');
-    exit;
-}
+    // Si l'objecte no existeix a la bbdd redirigeix a index.php
+    if (!$resultat) {
+        include_once 'includes/db_close.php';
+        header('Location: index.php');
+        exit;
+    }
 
-include 'includes/menu.php';
+    include 'includes/menu.php';
 ?>
 
 <div class="container my-5">
     
     <?php if (isset($_GET['prestec']) && $_GET['prestec'] === 'ok'): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            🎉 <strong>¡Préstec registrat correctament!</strong> L'objecte s'ha reservat de manera immediata al teu nom.
+            <strong>Préstec registrat correctament!</strong> L'objecte s'ha reservat a nom teu.
         </div>
     <?php endif; ?>
 
@@ -72,7 +70,7 @@ include 'includes/menu.php';
                 <hr>
 
                 <div class="bg-light p-3 rounded border">
-                    <h5 class="h6 text-secondary mb-2">🌱 Informació de Proximitat (Economia Circular)</h5>
+                    <h5 class="h6 text-secondary mb-2">Informació de Proximitat (Economia Circular)</h5>
                     <p class="mb-1"><strong>Cedit per:</strong> <?php echo htmlspecialchars($resultat['usu_nom']); ?></p>
                     <p class="mb-1"><strong>Barri de Barcelona:</strong> <?php echo htmlspecialchars($resultat['usu_barri']); ?></p>
                     <p class="mb-0"><strong>Correu de contacte:</strong> <a href="mailto:<?php echo $resultat['usu_mail']; ?>"><?php echo htmlspecialchars($resultat['usu_mail']); ?></a></p>
@@ -94,10 +92,9 @@ include 'includes/menu.php';
                 <div>
                     <?php if ($resultat['obj_estat'] == 'disponible'): ?>
                         <?php if ($usuariLoguejat): ?>
-                            <a href="sollicitar_prestec.php?id=<?php echo $resultat['obj_id']; ?>" 
-                               class="btn btn-success fw-bold" 
-                               onclick="return confirm('Estàs segur/a que vols demanar el préstec d\'aquest objecte a la base de dades?');">
-                               Sol·licitar Préstec
+                            <a href="productes/sollicitar_prestec.php?id=<?php echo $id_objecte; ?>" 
+                                onclick="return confirm('Vols confirmar la sol·licitud de préstec durant 7 dies?');" 
+                                class="btn btn-success fw-bold px-4 py-2">Sol·licitar Préstec
                             </a>
                         <?php else: ?>
                             <a href="logat/login.php" class="btn btn-outline-success btn-sm">

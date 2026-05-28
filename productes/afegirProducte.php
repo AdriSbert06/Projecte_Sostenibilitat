@@ -12,7 +12,7 @@ $categories = $db->query("SELECT * FROM categories ORDER BY cat_nom ASC");
 
 <div class="container my-5" style="max-width: 650px;">
     <div class="card p-4 shadow-sm border-0 bg-white rounded">
-        <h2 class="fw-bold text-dark mb-4">🛠️ Publicar un Nou Objecte</h2>
+        <h2 class="fw-bold text-dark mb-4">Publicar un Nou Objecte</h2>
         
         <form id="formAfegirObjecte">
             <div class="mb-3">
@@ -62,7 +62,7 @@ document.getElementById("formAfegirObjecte").addEventListener("submit", function
         imatge: document.getElementById("imatge").value.trim()
     };
 
-    // Apuntem al teu fitxer controlador "api/eines.php"
+    // Petició POST
     fetch('../api/eines.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -74,7 +74,7 @@ document.getElementById("formAfegirObjecte").addEventListener("submit", function
     })
     .then(data => {
         if (data.status === "success") {
-            feedback.innerHTML = `<div class="alert alert-success m-0">🎉 Objecte publicat correctament!</div>`;
+            feedback.innerHTML = `<div class="alert alert-success m-0">Objecte creat correctament!</div>`;
             setTimeout(() => window.location.href = "gestionarProductes.php?status=afegit", 1500);
         } else {
             feedback.innerHTML = `<div class="alert alert-danger m-0">⚠️ Error: ${data.message || 'No s\'ha pogut desar.'}</div>`;
